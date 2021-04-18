@@ -28,31 +28,39 @@ def timeValid(time):
     #With the above check, confirms that the format of the input is correct
     if(len(start) == 3):
         if (not start[:1].isnumeric()):
-            print("Incorrect Format on Start Hour Number")
+            print("Incorrect Format on Start Hour: \" " ,start[:1], " \" is not a number")
             return []
     elif(len(start) == 4):
         if (not start[:2].isnumeric()):
-            print("Incorrect Format on Start Hour Number")
+            print("Incorrect Format on Start Hour: \" " ,start[:2], "\"is not a number" )
             return []
+    else: 
+        print("Start Hour: \"", start, "\" has the wrong number of characters")
+        return []
     
     if(len(end) == 3):
         if (not end[:1].isnumeric()):
-            print("Incorrect Format on End Hour Number")
+            print("Incorrect Format on End Hour: \" " ,end[:1], " \" is not a number")
             return []
     elif(len(end) == 4):
         if (not end[:2].isnumeric()):
-            print("Incorrect Format on End Hour Number")
+            print("Incorrect Format on End Hour: \" " ,end[:2], " \" is not a number")
             return []
+    else: 
+        print("End Hour:\"", end, "\" has the wrong number of characters")
+        return []
     
     if(len(bed) == 3):
         if (not bed[:1].isnumeric()):
-            print("Incorrect Format on Bed Hour Number")
+            print("Incorrect Format on Bed Hour: \" " ,bed[:1], " \" is not a number")
             return []
     elif(len(bed) == 4):
         if (not bed[:2].isnumeric()):
-            print("Incorrect Format on Bed Hour Number")
+            print("Incorrect Format on Bed Hour: \" " ,bed[:2], " \" is not a number")
             return []
-
+    else: 
+        print("Bed Hour: \"", bed, "\" has the wrong number of characters")
+        return []
 
     #Note: I am under the assumption that it is unreasonable to have the start time be after 11pm, and that bedtime must be held before 12 am.
 
@@ -60,22 +68,18 @@ def timeValid(time):
     #Check if it is a 2 digit number or one digit number. if not fail. 
     #If it is a number confirm the number is accurate for the requirements.
     if(not start[:2].isnumeric()):
-        if(not start[:1].isnumeric()):
-            print("Enter a valid number for start hour")
-            return([])
+        if((int(start[:1]) > 4) and (startSuffix == "pm")):
+            startHour = int(start[:1])
+            oneDigitStart = True
         else:
-            if((int(start[:1]) > 4) and (startSuffix == "pm")):
-                startHour = int(start[:1])
-                oneDigitStart = True
-            else:
-                print("Start hour entered is invalid")
-                return([])
+            print("Start hour: \"",start,"\" is not between 5 pm and 11 pm")
+            return([])
 
     else:
         if((int(start[:2]) < 12) and (startSuffix == "pm")):
             startHour = int(start[:2])
         else:
-            print("Start hour entered is invalid")
+            print("Start hour: \"",start,"\" is not between 5 pm and 11 pm")
             return([])
     
     #Validate and grab the end hour
@@ -88,20 +92,16 @@ def timeValid(time):
         return []
 
     if(not end[:2].isnumeric()):
-        if(not end[:1].isnumeric()):
-            print("Enter a valid number for end hour")
-            return([])
+        if(((int(end[:1]) < 5) and (endSuffix == "am"))  or ((oneDigitStart) and ((int(end[:1]) > startHour) and (endSuffix == "pm")))):
+            endHour = int(end[:1])
         else:
-            if( ((int(end[:1]) < 5) and (endSuffix == "am"))  or ( (oneDigitStart) and ((int(end[:1]) > startHour) and (endSuffix == "pm")))):
-                endHour = int(end[:1])
-            else:
-                print("End hour entered is invalid")
-                return([])
+            print("End hour: \"", end ,"\" is not between 12 am and 5am")
+            return([])
     else:
         if(((not oneDigitStart) and (12 > int(end[:2]) > startHour) and (endSuffix == "pm")) or ((oneDigitStart) and  (12 > int(end[:2]) > startHour) and (endSuffix == "pm")) or (int(end[:2]) == 12  and (endSuffix == "am")) ):
             endHour = int(end[:2])
         else:
-            print("End hour entered is invalid")
+            print("End hour: \"", end ,"\" is not between 12 am and 5am")
             return([])
     
 
@@ -110,39 +110,29 @@ def timeValid(time):
     #Check if it is a 2 digit number or one digit number. if not fail. 
     #If it is a number confirm the number is accurate for the requirements.
 
+    if(bedSuffix == "am"):
+        print("Bed hour: \"", bed ,"\" is past 11 pm and is too late")  
+        return([])
+
     if(not bed[:2].isnumeric()):
-        if(not bed[:1].isnumeric()):
-            print("Enter a valid number for bed hour")
-            return([])
+        if(int(bed[:1]) >= startHour):
+            bedHour = int(bed[:1])
         else:
-            if(bedSuffix == "am"):
-                print("Bed hour entered is not correct")
-                return([])
-
-            elif(bedSuffix == "pm"):
-                if(int(bed[:1]) >= startHour):
-                    bedHour = int(bed[:1])
-                else:
-                    print("Bed hour entered is not during the babysitting hours")
-                    return([])
-    else:
-        if(bedSuffix == "am"):
-            print("Bed hour entered is not correct")
+            print("Bed hour: \"", bed ,"\" is not before start time and is too early")  
             return([])
-
-        elif(bedSuffix == "pm"):
-            if(int(bed[:2]) >= startHour):
-                if(endSuffix =="pm"):
-                    if(int(bed[:2]) <= endHour):
-                        bedHour = int(bed[:2])
-                    else:
-                        print("Bed hour entered is not during the babysitting hours")
-                        return([])
-                else:
+    else:
+        if(int(bed[:2]) >= startHour):
+            if(endSuffix =="pm"):
+                if(int(bed[:2]) <= endHour):
                     bedHour = int(bed[:2])
+                else:
+                    print("Bed hour: \"", bed ,"\" is not before start time or after end time")  
+                    return([])
             else:
-                print("Bed hour entered is not during the babysitting hours")
-                return([])
+                bedHour = int(bed[:2])
+        else:
+            print("Bed hour: \"", bed ,"\" is not before start time and is too early")  
+            return([])
 
     timeReturn = [startHour, endHour, bedHour]
 
@@ -177,8 +167,4 @@ def calulatePay(times):
 
 
 
-times = []
-while(len(times) == 0):
-    userValues = timeInput()
-    times = timeValid(userValues)
-calulatePay(times)
+

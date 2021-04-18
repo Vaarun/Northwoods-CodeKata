@@ -25,25 +25,35 @@ class TestTimeInput(unittest.TestCase):
 
 
 class TestTimeValid(unittest.TestCase):
+
+    #TDD Tests, code has changed from this
     @unittest.skip("tests outdated code") 
     def test_time_valid_basic(self):
         self.assertEqual(BabySitter.timeValid(), True)
 
+    #Was seeing if first value passed correctly 
     @unittest.skip("tests outdated code") 
     @patch('BabySitter.timeInput', return_value= ['7pm', "2am", "11pm"])
     def test_time_valid_1st_var_passed(self,input):
         self.assertEqual(BabySitter.timeValid(BabySitter.timeInput()), "7pm")
 
+    #Was seeing if second value passed correctly 
     @unittest.skip("tests outdated code") 
     @patch('BabySitter.timeInput', return_value= ['7pm', "2am", "11pm"])
     def test_time_valid_2nd_var_passed(self,input):
         self.assertEqual(BabySitter.timeValid(BabySitter.timeInput()), "2am")
     
+    #Was seeing if third value passed correctly
     @unittest.skip("tests outdated code") 
     @patch('BabySitter.timeInput', return_value= ['7pm', "2am", "11pm"])
     def test_time_valid_3rd_var_passed(self,input):
         self.assertEqual(BabySitter.timeValid(BabySitter.timeInput()), "11pm")
 
+
+
+    #Tests that aren't skipped:
+
+    #Tests the time Suffixes 
     @patch('BabySitter.timeInput', return_value= ['7Pas', "1234v", "11sadfpm"])
     def test_time_valid_time_wrong_formatting(self,input):
         self.assertEqual(BabySitter.timeValid(BabySitter.timeInput()), [])
@@ -64,10 +74,13 @@ class TestTimeValid(unittest.TestCase):
     def test_time_valid_suffix_correct_formatting_without_lower(self,input):
         self.assertEqual(BabySitter.timeValid(BabySitter.timeInput()), [7, 2, 11])
 
+
+
+    #Tests the start values and checks border values
     @patch('BabySitter.timeInput', return_value= ['2pm', "2am", "11pm"])
     def test_time_valid_too_early_start(self,input):
         self.assertEqual(BabySitter.timeValid(BabySitter.timeInput()), [])
- 
+
     @patch('BabySitter.timeInput', return_value= ['2am', "2am", "11pm"])
     def test_time_valid_too_late_start(self,input):
         self.assertEqual(BabySitter.timeValid(BabySitter.timeInput()), [])
@@ -88,6 +101,10 @@ class TestTimeValid(unittest.TestCase):
     def test_time_valid_correct_start_time_border(self,input):
         self.assertEqual(BabySitter.timeValid(BabySitter.timeInput()), [5, 2, 11])
 
+
+
+
+    #Tests the end values ranges, checks border values and makes sure that end is after start
     @patch('BabySitter.timeInput', return_value= ['6pm', "5pm", "11pm"])
     def test_time_valid_too_early_end(self,input):
         self.assertEqual(BabySitter.timeValid(BabySitter.timeInput()), [])
@@ -116,6 +133,10 @@ class TestTimeValid(unittest.TestCase):
     def test_time_valid_incorrect_end_start_same(self,input):
         self.assertEqual(BabySitter.timeValid(BabySitter.timeInput()), [])
 
+
+
+
+    #Tests the bed values and makes sure that the values are inbetween start/end and are valid 
     @patch('BabySitter.timeInput', return_value= ['8pm', "1am", "9pm"])
     def test_time_valid_correct_bed_start_1_digit(self,input):
         self.assertEqual(BabySitter.timeValid(BabySitter.timeInput()), [8, 1, 9])
